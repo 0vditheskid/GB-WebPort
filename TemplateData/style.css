@@ -21,7 +21,12 @@ html, body { width: 100%; height: 100%; padding: 0; margin: 0; overflow: hidden 
 #touch-controls button svg { width: 32px; height: 32px; fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round }
 #touch-controls button.held svg { stroke: #111 }
 .touch-actions { display: grid; grid-template-columns: repeat(3, 64px); gap: 8px }
-.touch-actions button[data-key="space"] { border-radius: 32px }
+.touch-actions button[data-key="space"] { border-radius: 32px; order: 5 }
+.touch-actions button[data-key="comma"] { order: 1 }
+.touch-actions button[data-key="m"] { order: 2 }
+.touch-actions button[data-key="period"] { order: 3 }
+.touch-actions button[data-key="ctrl"] { order: 4 }
+.touch-actions button[data-key="shift"] { order: 6 }
 #touch-controls button.menu { align-self: flex-start; width: 48px; height: 48px; border-radius: 14px }
 #touch-controls button.hold-icon .icon-grab { display: none }
 #touch-controls button.hold-icon.held .icon-punch { display: none }
