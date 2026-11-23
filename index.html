@@ -22,6 +22,7 @@
         <option value="1">Full</option>
         <option value="0.75">Balanced</option>
         <option value="0.5">Performance</option>
+        <option value="0.25">Fastest</option>
       </select>
       <div id="promo">
         <img src="StreamingAssets/Blue-Graffiti-Doodle-Poster.png" alt="">
@@ -48,7 +49,7 @@
       var mobileWarning = document.querySelector("#unity-mobile-warning");
       var promo = document.querySelector("#promo");
       var qualitySelect = document.querySelector("#quality-select");
-      var renderScale = Number(localStorage.getItem("renderScale") || 1);
+      var renderScale = Number(localStorage.getItem("renderScale") || 0.5);
 
       qualitySelect.value = String(renderScale);
       qualitySelect.addEventListener("pointerdown", (event) => {
