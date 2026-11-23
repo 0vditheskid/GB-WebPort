@@ -18,9 +18,9 @@
       <div id="unity-mobile-warning">
         WebGL builds are not supported on mobile devices.
       </div>
-    </div>
-    <div id="promo">
-      <img src="StreamingAssets/Blue-Graffiti-Doodle-Poster.png" alt="">
+      <div id="promo">
+        <img src="StreamingAssets/Blue-Graffiti-Doodle-Poster.png" alt="">
+      </div>
     </div>
     <script src="game-data.js"></script>
     <script>
@@ -77,10 +77,10 @@
           config.dataUrl = dataBlobUrl;
         await createUnityInstance(canvas, config, (progress) => {
           progressBarFull.style.width = (80 + 20 * progress) + "%";
-        }).then((unityInstance) => {
+        }).then(() => {
           loadingBar.style.display = "none";
           document.addEventListener("pointerdown", () => {
-            unityInstance.SetFullscreen(1);
+            if (!document.fullscreenElement) container.requestFullscreen();
           });
           promo.classList.add("visible");
           setTimeout(() => promo.classList.remove("visible"), 4000);
