@@ -29,6 +29,22 @@
         <label><input type="checkbox" id="fps-checkbox"> FPS</label>
       </div>
       <div id="fps-counter"></div>
+      <div id="touch-controls">
+        <div class="touch-pad">
+          <button data-key="w">W</button>
+          <button data-key="a">A</button>
+          <button data-key="s">S</button>
+          <button data-key="d">D</button>
+        </div>
+        <div class="touch-actions">
+          <button data-key="ctrl">Ctrl</button>
+          <button data-key="m">M</button>
+          <button data-key="shift">Shift</button>
+          <button data-key="comma">,</button>
+          <button data-key="space">Space</button>
+          <button data-key="period">.</button>
+        </div>
+      </div>
       <div id="promo">
         <img src="StreamingAssets/Blue-Graffiti-Doodle-Poster.png" alt="">
       </div>
@@ -67,6 +83,50 @@
       });
       fpsCheckbox.addEventListener("change", () => {
         fpsCounter.style.display = fpsCheckbox.checked ? "block" : "none";
+      });
+
+      var KEYS = {
+        w: { key: "w", code: "KeyW", keyCode: 87 },
+        a: { key: "a", code: "KeyA", keyCode: 65 },
+        s: { key: "s", code: "KeyS", keyCode: 83 },
+        d: { key: "d", code: "KeyD", keyCode: 68 },
+        m: { key: "m", code: "KeyM", keyCode: 77 },
+        space: { key: " ", code: "Space", keyCode: 32 },
+        ctrl: { key: "Control", code: "ControlLeft", keyCode: 17 },
+        shift: { key: "Shift", code: "ShiftLeft", keyCode: 16 },
+        comma: { key: ",", code: "Comma", keyCode: 188 },
+        period: { key: ".", code: "Period", keyCode: 190 },
+      };
+      var sendKey = (type, keyInfo) => {
+        var event = new KeyboardEvent(type, { key: keyInfo.key, code: keyInfo.code, bubbles: true, cancelable: true });
+        Object.defineProperty(event, "keyCode", { get: () => keyInfo.keyCode });
+        Object.defineProperty(event, "which", { get: () => keyInfo.keyCode });
+        canvas.dispatchEvent(event);
+      };
+
+      var touchControls = document.querySelector("#touch-controls");
+      if (matchMedia("(pointer: coarse)").matches) {
+        touchControls.classList.add("enabled");
+      }
+      touchControls.querySelectorAll("button").forEach((button) => {
+        var keyInfo = KEYS[button.dataset.key];
+        button.addEventListener("pointerdown", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          button.setPointerCapture(event.pointerId);
+          sendKey("keydown", keyInfo);
+        });
+        var release = (event) => {
+          event.stopPropagation();
+          if (button.hasPointerCapture(event.pointerId)) sendKey("keyup", keyInfo);
+        };
+        button.addEventListener("pointerup", release);
+        button.addEventListener("pointercancel", release);
+      });
+      window.addEventListener("blur", () => {
+        touchControls.querySelectorAll("button").forEach((button) => {
+          sendKey("keyup", KEYS[button.dataset.key]);
+        });
       });
 
       var frames = 0;
