@@ -14,16 +14,21 @@
         <div id="unity-progress-bar-empty">
           <div id="unity-progress-bar-full"></div>
         </div>
+        <div id="unity-loading-text">0%</div>
       </div>
       <div id="unity-mobile-warning">
         WebGL builds are not supported on mobile devices.
       </div>
-      <select id="quality-select" title="Render quality">
-        <option value="1">Full</option>
-        <option value="0.75">Balanced</option>
-        <option value="0.5">Performance</option>
-        <option value="0.25">Fastest</option>
-      </select>
+      <div id="toolbar">
+        <select id="quality-select" title="Render quality">
+          <option value="1">Full</option>
+          <option value="0.75">Balanced</option>
+          <option value="0.5">Performance</option>
+          <option value="0.25">Fastest</option>
+        </select>
+        <label><input type="checkbox" id="fps-checkbox"> FPS</label>
+      </div>
+      <div id="fps-counter"></div>
       <div id="promo">
         <img src="StreamingAssets/Blue-Graffiti-Doodle-Poster.png" alt="">
       </div>
@@ -52,9 +57,35 @@
       var renderScale = Number(localStorage.getItem("renderScale") || 0.5);
 
       qualitySelect.value = String(renderScale);
-      qualitySelect.addEventListener("pointerdown", (event) => {
+      var toolbar = document.querySelector("#toolbar");
+      var fpsCheckbox = document.querySelector("#fps-checkbox");
+      var fpsCounter = document.querySelector("#fps-counter");
+      var progressText = document.querySelector("#unity-loading-text");
+
+      toolbar.addEventListener("pointerdown", (event) => {
         event.stopPropagation();
       });
+      fpsCheckbox.addEventListener("change", () => {
+        fpsCounter.style.display = fpsCheckbox.checked ? "block" : "none";
+      });
+
+      var frames = 0;
+      var lastFpsTime = performance.now();
+      var countFrames = (now) => {
+        frames++;
+        if (now - lastFpsTime >= 1000) {
+          fpsCounter.textContent = Math.round(frames * 1000 / (now - lastFpsTime)) + " FPS";
+          frames = 0;
+          lastFpsTime = now;
+        }
+        requestAnimationFrame(countFrames);
+      };
+      requestAnimationFrame(countFrames);
+
+      var setProgress = (percent) => {
+        progressBarFull.style.width = percent + "%";
+        progressText.textContent = Math.round(percent) + "%";
+      };
       qualitySelect.addEventListener("change", () => {
         localStorage.setItem("renderScale", qualitySelect.value);
         location.reload();
@@ -91,11 +122,11 @@
         var dataBlobUrl;
         try {
           dataBlobUrl = await loadGameData("Build/data-manifest.json", (progress) => {
-            progressBarFull.style.width = (80 * progress) + "%";
+            setProgress(80 * progress);
           });
           config.dataUrl = dataBlobUrl;
         await createUnityInstance(canvas, config, (progress) => {
-          progressBarFull.style.width = (80 + 20 * progress) + "%";
+          setProgress(80 + 20 * progress);
         }).then(() => {
           loadingBar.style.display = "none";
           document.addEventListener("pointerdown", () => {
