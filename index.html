@@ -19,6 +19,9 @@
         WebGL builds are not supported on mobile devices.
       </div>
     </div>
+    <div id="promo">
+      <img src="StreamingAssets/Blue-Graffiti-Doodle-Poster.png" alt="">
+    </div>
     <script src="game-data.js"></script>
     <script>
       var buildUrl = "Build";
@@ -38,6 +41,11 @@
       var loadingBar = document.querySelector("#unity-loading-bar");
       var progressBarFull = document.querySelector("#unity-progress-bar-full");
       var mobileWarning = document.querySelector("#unity-mobile-warning");
+      var promo = document.querySelector("#promo");
+
+      promo.addEventListener("click", () => {
+        window.open("https://mixedness.space", "_blank", "noopener");
+      });
 
       // By default Unity keeps WebGL canvas render target size matched with
       // the DOM size of the canvas element (scaled by window.devicePixelRatio)
@@ -74,6 +82,8 @@
           document.addEventListener("pointerdown", () => {
             unityInstance.SetFullscreen(1);
           });
+          promo.classList.add("visible");
+          setTimeout(() => promo.classList.remove("visible"), 4000);
         });
         } catch (error) {
           console.error(error);
