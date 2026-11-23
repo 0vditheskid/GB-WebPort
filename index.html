@@ -30,11 +30,8 @@
       </div>
       <div id="fps-counter"></div>
       <div id="touch-controls">
-        <div class="touch-pad">
-          <button data-key="w">W</button>
-          <button data-key="a">A</button>
-          <button data-key="s">S</button>
-          <button data-key="d">D</button>
+        <div id="joystick">
+          <div id="joystick-knob"></div>
         </div>
         <button data-key="esc" class="menu" aria-label="Menu">
           <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
@@ -135,10 +132,60 @@
         button.addEventListener("pointerup", release);
         button.addEventListener("pointercancel", release);
       });
+      var joystick = document.querySelector("#joystick");
+      var joystickKnob = document.querySelector("#joystick-knob");
+      var joystickPointer = null;
+      var moveKeys = { w: false, a: false, s: false, d: false };
+      var setMoveKey = (name, down) => {
+        if (moveKeys[name] === down) return;
+        moveKeys[name] = down;
+        sendKey(down ? "keydown" : "keyup", KEYS[name]);
+      };
+      var updateJoystick = (event) => {
+        var rect = joystick.getBoundingClientRect();
+        var radius = rect.width / 2;
+        var dx = event.clientX - (rect.left + radius);
+        var dy = event.clientY - (rect.top + radius);
+        var distance = Math.hypot(dx, dy);
+        var limit = radius * 0.55;
+        if (distance > limit) {
+          dx *= limit / distance;
+          dy *= limit / distance;
+        }
+        joystickKnob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+        var threshold = radius * 0.3;
+        setMoveKey("w", dy < -threshold);
+        setMoveKey("s", dy > threshold);
+        setMoveKey("a", dx < -threshold);
+        setMoveKey("d", dx > threshold);
+      };
+      var releaseJoystick = () => {
+        joystickPointer = null;
+        joystickKnob.style.transform = "";
+        joystick.classList.remove("active");
+        Object.keys(moveKeys).forEach((name) => setMoveKey(name, false));
+      };
+      joystick.addEventListener("pointerdown", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        joystickPointer = event.pointerId;
+        joystick.setPointerCapture(event.pointerId);
+        joystick.classList.add("active");
+        updateJoystick(event);
+      });
+      joystick.addEventListener("pointermove", (event) => {
+        if (event.pointerId === joystickPointer) updateJoystick(event);
+      });
+      var endJoystick = (event) => {
+        if (event.pointerId === joystickPointer) releaseJoystick();
+      };
+      joystick.addEventListener("pointerup", endJoystick);
+      joystick.addEventListener("pointercancel", endJoystick);
       window.addEventListener("blur", () => {
         touchControls.querySelectorAll("button").forEach((button) => {
           sendKey("keyup", KEYS[button.dataset.key]);
         });
+        releaseJoystick();
       });
 
       var frames = 0;
