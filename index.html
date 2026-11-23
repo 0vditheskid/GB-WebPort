@@ -20,22 +20,27 @@
         WebGL builds are not supported on mobile devices.
       </div>
       <div id="toolbar">
-        <select id="quality-select" title="Render quality">
-          <option value="1">Full</option>
-          <option value="0.75">Balanced</option>
-          <option value="0.5">Performance</option>
-          <option value="0.25">Fastest</option>
-        </select>
-        <label><input type="checkbox" id="fps-checkbox"> FPS</label>
+        <button id="settings-toggle" aria-label="Toggle settings">
+          <svg viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="16" cy="18" r="2"/></svg>
+        </button>
+        <div id="settings-panel">
+          <select id="quality-select" title="Render quality">
+            <option value="1">Full</option>
+            <option value="0.75">Balanced</option>
+            <option value="0.5">Performance</option>
+            <option value="0.25">Fastest</option>
+          </select>
+          <label><input type="checkbox" id="fps-checkbox"> FPS</label>
+        </div>
       </div>
       <div id="fps-counter"></div>
+      <button id="menu-button" data-key="esc" aria-label="Menu">
+        <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
       <div id="touch-controls">
         <div id="joystick">
           <div id="joystick-knob"></div>
         </div>
-        <button data-key="esc" class="menu" aria-label="Menu">
-          <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-        </button>
         <div class="touch-actions">
           <button data-key="ctrl">Ctrl</button>
           <button data-key="m">M</button>
@@ -81,6 +86,10 @@
       qualitySelect.value = String(renderScale);
       var toolbar = document.querySelector("#toolbar");
       var fpsCheckbox = document.querySelector("#fps-checkbox");
+      var settingsPanel = document.querySelector("#settings-panel");
+      document.querySelector("#settings-toggle").addEventListener("click", () => {
+        settingsPanel.style.display = settingsPanel.style.display === "none" ? "" : "none";
+      });
       var fpsCounter = document.querySelector("#fps-counter");
       var progressText = document.querySelector("#unity-loading-text");
 
@@ -115,7 +124,7 @@
       if (matchMedia("(pointer: coarse)").matches) {
         touchControls.classList.add("enabled");
       }
-      touchControls.querySelectorAll("button").forEach((button) => {
+      document.querySelectorAll("[data-key]").forEach((button) => {
         var keyInfo = KEYS[button.dataset.key];
         button.addEventListener("pointerdown", (event) => {
           event.preventDefault();
@@ -182,7 +191,7 @@
       joystick.addEventListener("pointerup", endJoystick);
       joystick.addEventListener("pointercancel", endJoystick);
       window.addEventListener("blur", () => {
-        touchControls.querySelectorAll("button").forEach((button) => {
+        document.querySelectorAll("[data-key]").forEach((button) => {
           sendKey("keyup", KEYS[button.dataset.key]);
         });
         releaseJoystick();
