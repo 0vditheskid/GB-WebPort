@@ -36,13 +36,22 @@
           <button data-key="s">S</button>
           <button data-key="d">D</button>
         </div>
+        <button data-key="esc" class="menu" aria-label="Menu">
+          <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
         <div class="touch-actions">
           <button data-key="ctrl">Ctrl</button>
           <button data-key="m">M</button>
           <button data-key="shift">Shift</button>
-          <button data-key="comma">,</button>
+          <button data-key="comma" class="hold-icon" aria-label="Punch / grab">
+            <svg class="icon-punch" viewBox="0 0 24 24"><path d="M7 11V7a2 2 0 0 1 4 0v3M11 10V6a2 2 0 0 1 4 0v4M15 10V7a2 2 0 0 1 4 0v6a6 6 0 0 1-6 6h-1a5 5 0 0 1-4-2l-3-4a1.5 1.5 0 0 1 2.3-1.9L7 13"/></svg>
+            <svg class="icon-grab" viewBox="0 0 24 24"><path d="M18 11V6a2 2 0 0 0-4 0M14 10V4a2 2 0 0 0-4 0v2M10 10.5V6a2 2 0 0 0-4 0v8M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-6-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>
+          </button>
           <button data-key="space">Space</button>
-          <button data-key="period">.</button>
+          <button data-key="period" class="hold-icon" aria-label="Punch / grab">
+            <svg class="icon-punch" viewBox="0 0 24 24"><path d="M7 11V7a2 2 0 0 1 4 0v3M11 10V6a2 2 0 0 1 4 0v4M15 10V7a2 2 0 0 1 4 0v6a6 6 0 0 1-6 6h-1a5 5 0 0 1-4-2l-3-4a1.5 1.5 0 0 1 2.3-1.9L7 13"/></svg>
+            <svg class="icon-grab" viewBox="0 0 24 24"><path d="M18 11V6a2 2 0 0 0-4 0M14 10V4a2 2 0 0 0-4 0v2M10 10.5V6a2 2 0 0 0-4 0v8M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-6-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>
+          </button>
         </div>
       </div>
       <div id="promo">
@@ -96,6 +105,7 @@
         shift: { key: "Shift", code: "ShiftLeft", keyCode: 16 },
         comma: { key: ",", code: "Comma", keyCode: 188 },
         period: { key: ".", code: "Period", keyCode: 190 },
+        esc: { key: "Escape", code: "Escape", keyCode: 27 },
       };
       var sendKey = (type, keyInfo) => {
         var event = new KeyboardEvent(type, { key: keyInfo.key, code: keyInfo.code, bubbles: true, cancelable: true });
@@ -114,10 +124,12 @@
           event.preventDefault();
           event.stopPropagation();
           button.setPointerCapture(event.pointerId);
+          button.classList.add("held");
           sendKey("keydown", keyInfo);
         });
         var release = (event) => {
           event.stopPropagation();
+          button.classList.remove("held");
           if (button.hasPointerCapture(event.pointerId)) sendKey("keyup", keyInfo);
         };
         button.addEventListener("pointerup", release);
