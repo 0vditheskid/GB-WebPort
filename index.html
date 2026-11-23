@@ -18,6 +18,11 @@
       <div id="unity-mobile-warning">
         WebGL builds are not supported on mobile devices.
       </div>
+      <select id="quality-select" title="Render quality">
+        <option value="1">Full</option>
+        <option value="0.75">Balanced</option>
+        <option value="0.5">Performance</option>
+      </select>
       <div id="promo">
         <img src="StreamingAssets/Blue-Graffiti-Doodle-Poster.png" alt="">
       </div>
@@ -42,6 +47,17 @@
       var progressBarFull = document.querySelector("#unity-progress-bar-full");
       var mobileWarning = document.querySelector("#unity-mobile-warning");
       var promo = document.querySelector("#promo");
+      var qualitySelect = document.querySelector("#quality-select");
+      var renderScale = Number(localStorage.getItem("renderScale") || 1);
+
+      qualitySelect.value = String(renderScale);
+      qualitySelect.addEventListener("pointerdown", (event) => {
+        event.stopPropagation();
+      });
+      qualitySelect.addEventListener("change", () => {
+        localStorage.setItem("renderScale", qualitySelect.value);
+        location.reload();
+      });
 
       promo.addEventListener("click", () => {
         window.open("https://mixedness.space", "_blank", "noopener");
@@ -58,11 +74,13 @@
         container.className = "unity-mobile";
         // Avoid draining fillrate performance on mobile devices,
         // and default/override low DPI mode on mobile browsers.
-        config.devicePixelRatio = 1;
+        config.devicePixelRatio = renderScale;
         mobileWarning.style.display = "block";
         setTimeout(() => {
           mobileWarning.style.display = "none";
         }, 5000);
+      } else {
+        config.devicePixelRatio = window.devicePixelRatio * renderScale;
       }
       loadingBar.style.display = "block";
 
