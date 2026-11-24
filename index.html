@@ -99,6 +99,15 @@
           </div>
         </div>
       </div>
+      <div id="discord-popup">
+        <div class="sp-panel">
+          <p>Join our Discord to stay in touch</p>
+          <div class="sp-actions">
+            <a class="sp-button" href="https://discord.gg/Zdx7DrT" target="_blank" rel="noopener">Join Discord</a>
+            <button id="discord-later" type="button">Not now</button>
+          </div>
+        </div>
+      </div>
     </div>
     <script src="game-data.js"></script>
     <script>
@@ -295,9 +304,17 @@
       supportPopup.addEventListener("pointerdown", (event) => {
         event.stopPropagation();
       });
+      var discordPopup = document.querySelector("#discord-popup");
+      discordPopup.addEventListener("pointerdown", (event) => {
+        event.stopPropagation();
+      });
       document.querySelector("#support-later").addEventListener("click", () => {
         localStorage.setItem("supportConfirmedAt", String(Date.now()));
         supportPopup.classList.remove("visible");
+        discordPopup.classList.add("visible");
+      });
+      document.querySelector("#discord-later").addEventListener("click", () => {
+        discordPopup.classList.remove("visible");
       });
 
       // By default Unity keeps WebGL canvas render target size matched with
