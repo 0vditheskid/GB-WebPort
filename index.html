@@ -34,6 +34,33 @@
         </div>
       </div>
       <img id="credit" src="StreamingAssets/port-credit.webp" alt="">
+      <div id="controls-menu">
+        <div class="cm-panel">
+          <div class="cm-title">Controls</div>
+          <div class="cm-grid">
+            <div class="cm-section">
+              <h3>Movement</h3>
+              <div class="cm-row"><span>Move</span><span><i class="key">W</i><i class="key">A</i><i class="key">S</i><i class="key">D</i></span></div>
+              <div class="cm-row"><span>Run</span><span>Space + move</span></div>
+              <div class="cm-row"><span>Crouch</span><span><i class="key wide">Ctrl</i></span></div>
+              <div class="cm-row"><span>Sit</span><span><i class="key wide">Ctrl</i> still</span></div>
+              <div class="cm-row"><span>Lie down</span><span><i class="key wide">Ctrl</i> moving</span></div>
+            </div>
+            <div class="cm-section">
+              <h3>Actions</h3>
+              <div class="cm-row"><span>Jump</span><span><i class="key wide">Space</i></span></div>
+              <div class="cm-row"><span>Lift / Grab</span><span><i class="key wide">Shift</i></span></div>
+              <div class="cm-row"><span>Kick</span><span><i class="key">M</i></span></div>
+              <div class="cm-row"><span>Headbutt</span><span><i class="key wide">RMB</i> or <i class="key">.</i></span></div>
+              <div class="cm-row"><span>Taunt</span><span><i class="key wide">Shift</i> (empty hands)</span></div>
+            </div>
+          </div>
+          <div class="cm-footer">
+            <span>Hold H for 2 seconds to close</span>
+            <button id="controls-close">Got it!</button>
+          </div>
+        </div>
+      </div>
       <div id="fps-counter"></div>
       <button id="menu-button" data-key="esc" aria-label="Menu">
         <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
@@ -87,6 +114,26 @@
       qualitySelect.value = String(renderScale);
       var toolbar = document.querySelector("#toolbar");
       var fpsCheckbox = document.querySelector("#fps-checkbox");
+      var controlsMenu = document.querySelector("#controls-menu");
+      var helpHoldTimer = null;
+      document.addEventListener("keydown", (event) => {
+        if (event.code !== "KeyH" || event.repeat || helpHoldTimer) return;
+        helpHoldTimer = setTimeout(() => {
+          helpHoldTimer = null;
+          controlsMenu.classList.toggle("visible");
+        }, 2000);
+      });
+      document.addEventListener("keyup", (event) => {
+        if (event.code !== "KeyH") return;
+        clearTimeout(helpHoldTimer);
+        helpHoldTimer = null;
+      });
+      controlsMenu.addEventListener("pointerdown", (event) => {
+        event.stopPropagation();
+      });
+      document.querySelector("#controls-close").addEventListener("click", () => {
+        controlsMenu.classList.remove("visible");
+      });
       var settingsPanel = document.querySelector("#settings-panel");
       document.querySelector("#settings-toggle").addEventListener("click", () => {
         settingsPanel.style.display = settingsPanel.style.display === "none" ? "" : "none";
