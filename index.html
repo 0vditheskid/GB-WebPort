@@ -89,6 +89,16 @@
       <div id="promo">
         <img src="StreamingAssets/Blue-Graffiti-Doodle-Poster.png" alt="">
       </div>
+      <div id="support-popup">
+        <div class="sp-panel">
+          <svg class="sp-heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.5-9.1C1.1 8.6 3 5 6.5 5c2.1 0 3.5 1.2 4.5 2.6C12 6.2 13.4 5 15.5 5 19 5 20.9 8.6 21.5 11.9 19.5 16.4 12 21 12 21z"/></svg>
+          <p>Please Do This To Support Me</p>
+          <div class="sp-actions">
+            <a class="sp-button" href="confirm.html">Support</a>
+            <button id="support-later" type="button">Not now</button>
+          </div>
+        </div>
+      </div>
     </div>
     <script src="game-data.js"></script>
     <script>
@@ -274,6 +284,20 @@
 
       promo.addEventListener("click", () => {
         window.open("https://mixedness.space", "_blank", "noopener");
+      });
+
+      var supportPopup = document.querySelector("#support-popup");
+      var SUPPORT_INTERVAL_MS = 48 * 60 * 60 * 1000;
+      var supportLastShown = Number(localStorage.getItem("supportConfirmedAt") || 0);
+      if (Date.now() - supportLastShown >= SUPPORT_INTERVAL_MS) {
+        supportPopup.classList.add("visible");
+      }
+      supportPopup.addEventListener("pointerdown", (event) => {
+        event.stopPropagation();
+      });
+      document.querySelector("#support-later").addEventListener("click", () => {
+        localStorage.setItem("supportConfirmedAt", String(Date.now()));
+        supportPopup.classList.remove("visible");
       });
 
       // By default Unity keeps WebGL canvas render target size matched with
