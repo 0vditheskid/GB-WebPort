@@ -356,6 +356,7 @@
           });
           promo.classList.add("visible");
           setTimeout(() => promo.classList.remove("visible"), 4000);
+          if (!supportPopup.classList.contains("visible")) discordPopup.classList.add("visible");
         });
         } catch (error) {
           console.error(error);
