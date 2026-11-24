@@ -81,6 +81,9 @@
           <button data-key="period" aria-label="Headbutt">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></svg>
           </button>
+          <button data-key="q">Q</button>
+          <button data-key="left">&#8592;</button>
+          <button data-key="right">&#8594;</button>
         </div>
       </div>
       <div id="promo">
@@ -158,6 +161,9 @@
         shift: { key: "Shift", code: "ShiftLeft", keyCode: 16 },
         comma: { key: ",", code: "Comma", keyCode: 188 },
         period: { key: ".", code: "Period", keyCode: 190 },
+        q: { key: "q", code: "KeyQ", keyCode: 81 },
+        left: { key: "ArrowLeft", code: "ArrowLeft", keyCode: 37 },
+        right: { key: "ArrowRight", code: "ArrowRight", keyCode: 39 },
         esc: { key: "Escape", code: "Escape", keyCode: 27 },
       };
       var sendKey = (type, keyInfo) => {
